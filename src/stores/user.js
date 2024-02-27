@@ -10,9 +10,11 @@ import  router  from '../router';
 export const useUserStore = defineStore('userStore', {
     state: () => ({
         userData: null,
+        loadingUser: false
     }),
     actions: {
-        async registerUser(email, password){
+        async registerUser(email, password) {
+            this.loadingUser = true
             try {
                 const { user } = await createUserWithEmailAndPassword(
                     auth,
@@ -23,9 +25,12 @@ export const useUserStore = defineStore('userStore', {
                 router.push('/')
             } catch (error) {
                 console.log(error);
+            } finally {
+                this.loadingUser = false
             }
         },
         async loginUser(email, password) {
+            this.loadingUser = true
             try {
                 const { user } = await signInWithEmailAndPassword(
                     auth,
@@ -35,6 +40,9 @@ export const useUserStore = defineStore('userStore', {
                 this.userData = { email: user.email, uid: user.uid };
                 router.push('/')
             } catch (error) {
+                console.log(error);
+            } finally {
+                this.loadingUser =  true
             }
         },
         async logoutUser() {
