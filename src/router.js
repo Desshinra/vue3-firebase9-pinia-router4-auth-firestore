@@ -7,12 +7,14 @@ import Register from './views/RegisterView.vue'
 
 const requiereAuth = async(to, from, next) => {
     const userStore = useUserStore();
+    userStore.loadingSession = true
     const user = await userStore.currentUser();
     if (user) {
         next();
     } else {
         next('/login')
     }
+    userStore.loadingSession = false
 }
 
 const routes = [
