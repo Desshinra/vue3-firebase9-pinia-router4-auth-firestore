@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import {
     createUserWithEmailAndPassword,
+    onAuthStateChanged,
     signInWithEmailAndPassword,
     signOut
 } from 'firebase/auth'
@@ -42,7 +43,7 @@ export const useUserStore = defineStore('userStore', {
             } catch (error) {
                 console.log(error);
             } finally {
-                this.loadingUser =  true
+                this.loadingUser =  false
             }
         },
         async logoutUser() {
@@ -53,6 +54,25 @@ export const useUserStore = defineStore('userStore', {
             } catch (error) {
                 console.log(error);
             }
+        },
+        currentUser() {
+            return new Promise((resolve, reject) => {
+                const unsuscribe = onAuthStateChanged(
+                    auth,
+                    (user) => {
+                        if (user) {
+                            this.userData = {
+                                email: user.email,
+                                uid: user.uid
+                            }
+                        } else {
+                            this.userData = null
+                        }
+                        resolve(user);
+                    },
+                    e => reject(e)
+                );
+            });
         }
     },//Actions is equivalent to methods
 });

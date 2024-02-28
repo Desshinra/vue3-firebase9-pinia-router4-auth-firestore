@@ -21,7 +21,7 @@ const email = ref('desshinra2@gmail.com')
 const password = ref('12345678')
 
 const handleSubmit = async() => {
-    if(!email.value || password.value < 6) {
+    if(!email.value || password.value.length < 6) {
         return alert ('Llena los campos!!!')
     }
     await userStore.registerUser(email.value, password.value)
